@@ -26,10 +26,9 @@ data_json = requests.get(
     auth=(SNCF_TOKEN, '')).json()
 print(TAG + "Getting disruptions from " + yesterday.strftime("%m-%d-%Y"))
 
-n = 0
-for d in data_json['disruptions']:
-    n += 1
-
-message = "\u1f689 Le " + yesterday.strftime("%d/%m/%Y") + " :\n" \
+n = data_json['pagination']['total_result']
+message = "Le " + yesterday.strftime("%d/%m/%Y") + " :\n" \
                                                    " - "+str(n)+" trains ont été en retard"
 print(TAG + message)
+#api.update_status(message)
+print(TAG + "Tweet !")
