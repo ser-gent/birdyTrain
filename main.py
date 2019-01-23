@@ -26,9 +26,20 @@ data_json = requests.get(
     auth=(SNCF_TOKEN, '')).json()
 print(TAG + "Getting disruptions from " + yesterday.strftime("%m-%d-%Y"))
 
-n = data_json['pagination']['total_result']
+
+nb_train = data_json['pagination']['total_result']
+max_page = int(nb_train/data_json['pagination']['items_per_page'])
+print(TAG + "" + str(max_page) + " pages found")
+
+current_page = 1
+while current_page <= max_page:
+    data_page = requests.get(
+        'https://api.sncf.com/v1/coverage/sncf/disruptions//?since=' + convert_date(yesterday) + 'T000000&until=' + convert_date(today) + 'T000000&start_page=' + str(current_page) + '&', auth=(SNCF_TOKEN, '')).json()
+    print(TAG + "Page #" + str(current_page))
+    current_page += 1
+
 message = "Le " + yesterday.strftime("%d/%m/%Y") + " :\n" \
-                                                   " - "+str(n)+" trains ont été en retard"
-print(TAG + message)
+                                                   " - " + str(nb_train) + " trains ont été en retard"
+print(message)
 #api.update_status(message)
 print(TAG + "Tweet !")
